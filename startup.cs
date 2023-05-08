@@ -1,15 +1,21 @@
+using Microsoft.EntityFrameworkCore;
+
 public class startUp{
     public startUp(IConfiguration configuration){
         Configuration = configuration;
     }
 
     public IConfiguration Configuration {get;}
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddControllers();
+    services.AddDbContext<AppDbContext>(options =>
+        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+    
+    services.AddEndpointsApiExplorer();
+    services.AddSwaggerGen();
+}
 
-    public void ConfigureServices(IServiceCollection services){
-        services.AddControllers();
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
-    }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env){
         if(env.IsDevelopment()){
