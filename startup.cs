@@ -1,5 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 
+public class appSettings
+{
+    public string Secret { get; set; }
+}
 public class startUp{
     public startUp(IConfiguration configuration){
         Configuration = configuration;
