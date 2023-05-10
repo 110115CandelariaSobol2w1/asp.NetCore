@@ -1,58 +1,82 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography;
-using System.Text;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
-using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace mascotasApi.Net.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class UsuarioController : ControllerBase
 {
 
-    private readonly AppDbContext context;
-    private readonly IMapper mapper;
+    private readonly IUserService userService;
+    private IConfiguration config;
 
-    public UsuarioController(AppDbContext context, IMapper mapper)
+
+    public UsuarioController(IUserService userService, IConfiguration config)
     {
-        this.context = context;
-        this.mapper = mapper;
+        this.userService = userService;
+        this.config = config;
     }
 
     [HttpGet]
     public IEnumerable<Usuario> Get()
     {
-        return context.Usuarios.Where(u => u.dni != null && u.email != null && u.numero_tel != null).ToList();
+        return userService.Get();
     }
 
-    public static string HashPassword(string password)
-    {
-        var sha = SHA256.Create();
-        var asByteArray = Encoding.Default.GetBytes(password);
-        var hashedPassword = sha.ComputeHash(asByteArray);
-        return Convert.ToBase64String(hashedPassword);
-    }
+
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] usuarioDto usuarioDto)
+    public async Task<IActionResult> Post([FromBody] usuarioDto createUserDto)
     {
+        var newUser = await userService.CreateUserAsync(createUserDto);
 
-        // Hashear la password
-        string hashedPassword = HashPassword(usuarioDto.password);
-
-        // Crear un nuevo usuario a partir del DTO recibido
-        var usuario = mapper.Map<Usuario>(usuarioDto);
-        usuario.password = hashedPassword;
-
-        // Agregar el nuevo usuario al DbContext y guardar los cambios
-        context.Usuarios.Add(usuario);
-        await context.SaveChangesAsync();
-
-        return Ok();
+        return CreatedAtAction(nameof(Get), new { id = createUserDto.username }, newUser);
     }
 
-    
+
+    private string GenerateToken(Usuario user)
+    {
+        var claims = new[]{
+            new Claim(ClaimTypes.Name, user.username),
+        };
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("JWT:Key").Value));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+        var securityToken = new JwtSecurityToken(
+            claims: claims,
+            expires: DateTime.Now.AddMinutes(60),
+            signingCredentials: creds
+        );
+
+        string token = new JwtSecurityTokenHandler().WriteToken(securityToken);
+
+        return token;
+    }
+
+    [HttpPost("login")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Login(loginDto login)
+    {
+        var user = await userService.Login(login);
+
+        if (user == null)
+        {
+            return BadRequest(new { message = "Credenciales inválidas" });
+        }
+
+        // El login es exitoso, puedes realizar alguna acción adicional si es necesario
+        string jwtToken = GenerateToken(user);
+        return Ok(new{token = jwtToken});
+    }
+
+
+
+
 }
