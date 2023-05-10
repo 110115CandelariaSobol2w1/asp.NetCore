@@ -4,6 +4,7 @@ using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using AutoMapper;
 
 namespace mascotasApi.Net.Controllers;
 
@@ -13,10 +14,12 @@ public class UsuarioController : ControllerBase
 {
 
     private readonly AppDbContext context;
+    private readonly IMapper mapper;
 
-    public UsuarioController(AppDbContext context)
+    public UsuarioController(AppDbContext context, IMapper mapper)
     {
         this.context = context;
+        this.mapper = mapper;
     }
 
     [HttpGet]
@@ -27,44 +30,28 @@ public class UsuarioController : ControllerBase
 
     public static string HashPassword(string password)
     {
-        using (SHA256 sha256 = SHA256.Create())
-        {
-            byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
-            byte[] hashBytes = sha256.ComputeHash(passwordBytes);
-            string hash = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
-            return hash;
-        }
+        var sha = SHA256.Create();
+        var asByteArray = Encoding.Default.GetBytes(password);
+        var hashedPassword = sha.ComputeHash(asByteArray);
+        return Convert.ToBase64String(hashedPassword);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] Usuario usuarioDto)
+    public async Task<IActionResult> Post([FromBody] usuarioDto usuarioDto)
     {
-        // Validar los datos recibidos
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
 
         // Hashear la password
         string hashedPassword = HashPassword(usuarioDto.password);
 
         // Crear un nuevo usuario a partir del DTO recibido
-        Usuario usuario = new Usuario
-        {
-            IdRol = usuarioDto.IdRol,
-            dni = usuarioDto.dni,
-            email = usuarioDto.email,
-            numero_tel = usuarioDto.numero_tel,
-            password = hashedPassword,
-            username = usuarioDto.username
-        };
+        var usuario = mapper.Map<Usuario>(usuarioDto);
+        usuario.password = hashedPassword;
 
         // Agregar el nuevo usuario al DbContext y guardar los cambios
         context.Usuarios.Add(usuario);
         await context.SaveChangesAsync();
 
-        // Retornar la respuesta HTTP 201 Created con los datos del usuario creado
-        return CreatedAtAction(nameof(Get), new { id = usuario.IdUsuario }, usuario);
+        return Ok();
     }
 
     

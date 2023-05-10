@@ -1,11 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "fgvUkAdT29dfrZCfihx3ZslEeJpf1UC326pT91DjsIparQyrG2n0vJVs/ximv+0tv+02C3hcGfSajS63VoE7pg==",
+  "dgSpecHash": "2NtsZA6lz2Tr27gNyRhjD3No05iS5PvF3zM6W35WwsSICbs6Wf1kE+Vjk7JtpdXP9T+PhgNlrFw6DhuU9MzXrw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Candelaria\\Desktop\\Extrados\\.net\\mascotasApi.Net\\mascotasApi.Net.csproj",
+  "projectFilePath": "c:\\Users\\Candelaria\\Desktop\\Extrados\\.net\\mascotasApi.Net\\mascotasApi.Net.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Candelaria\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
+    "C:\\Users\\Candelaria\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
     "C:\\Users\\Candelaria\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
-    "C:\\Users\\Candelaria\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
+    "C:\\Users\\Candelaria\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\Candelaria\\.nuget\\packages\\microsoft.data.sqlclient\\2.1.4\\microsoft.data.sqlclient.2.1.4.nupkg.sha512",
     "C:\\Users\\Candelaria\\.nuget\\packages\\microsoft.data.sqlclient.sni.runtime\\2.1.1\\microsoft.data.sqlclient.sni.runtime.2.1.1.nupkg.sha512",
     "C:\\Users\\Candelaria\\.nuget\\packages\\microsoft.entityframeworkcore\\6.0.0\\microsoft.entityframeworkcore.6.0.0.nupkg.sha512",

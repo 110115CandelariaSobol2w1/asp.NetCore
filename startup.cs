@@ -18,6 +18,8 @@ public void ConfigureServices(IServiceCollection services)
     
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();
+
+    services.AddAutoMapper(typeof(startUp));
 }
 
 
