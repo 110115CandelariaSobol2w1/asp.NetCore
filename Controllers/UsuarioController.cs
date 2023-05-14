@@ -4,9 +4,11 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 
 namespace mascotasApi.Net.Controllers;
 
+[EnableCors("extrados")]
 [Authorize]
 [ApiController]
 [Route("[controller]")]
@@ -24,8 +26,10 @@ public class UsuarioController : ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public IEnumerable<Usuario> Get()
     {
+        
         return userService.Get();
     }
 

@@ -16,6 +16,13 @@ public class startUp
     public IConfiguration Configuration { get; }
     public void ConfigureServices(IServiceCollection services)
     {
+         services.AddCors(o => o.AddPolicy("extrados", builder =>{
+                builder.WithOrigins("http://127.0.0.1:5501")
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+            }));
+
+            services.AddRouting(r => r.SuppressCheckForUnhandledSecurityMetadata = true);
         services.AddControllers();
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
@@ -69,6 +76,8 @@ public class startUp
                     ValidateAudience = false
                 };
             });
+
+           
     }
 
 
@@ -78,7 +87,14 @@ public class startUp
         app.UseRouting();
 
         app.UseAuthentication();
-        app.UseAuthorization(); // Colócalo después de app.UseRouting() y antes de app.UseEndpoints(...)
+        app.UseAuthorization();
+
+        app.UseCors("extrados");
+
+        app.Use((context, next) => {
+            context.Items["__CorsMiddlewareInvoked"] = true;
+            return next();
+        });
 
         if (env.IsDevelopment())
         {
@@ -90,6 +106,8 @@ public class startUp
         {
             endpoints.MapControllers();
         });
+
+        
     }
 
 
