@@ -48,6 +48,7 @@ public class UsuarioController : ControllerBase
     {
         var claims = new[]{
             new Claim(ClaimTypes.Name, user.username),
+            new Claim("IdRol", user.IdRol.ToString())
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("JWT:Key").Value));

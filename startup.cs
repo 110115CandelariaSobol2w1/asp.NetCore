@@ -16,13 +16,14 @@ public class startUp
     public IConfiguration Configuration { get; }
     public void ConfigureServices(IServiceCollection services)
     {
-         services.AddCors(o => o.AddPolicy("extrados", builder =>{
-                builder.WithOrigins("http://127.0.0.1:5501")
-                .AllowAnyMethod()
-                .AllowAnyHeader();
-            }));
+        services.AddCors(o => o.AddPolicy("extrados", builder =>
+        {
+            builder.WithOrigins("http://127.0.0.1:5501")
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+        }));
 
-            services.AddRouting(r => r.SuppressCheckForUnhandledSecurityMetadata = true);
+        services.AddRouting(r => r.SuppressCheckForUnhandledSecurityMetadata = true);
         services.AddControllers();
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
@@ -73,11 +74,12 @@ public class startUp
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"])),
                     ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateAudience = false,
+                    RoleClaimType = "IdRol"
                 };
             });
 
-           
+
     }
 
 
@@ -91,7 +93,8 @@ public class startUp
 
         app.UseCors("extrados");
 
-        app.Use((context, next) => {
+        app.Use((context, next) =>
+        {
             context.Items["__CorsMiddlewareInvoked"] = true;
             return next();
         });
@@ -107,7 +110,7 @@ public class startUp
             endpoints.MapControllers();
         });
 
-        
+
     }
 
 
