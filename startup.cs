@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Security.Claims;
 
 public class startUp
 {
@@ -75,7 +76,7 @@ public class startUp
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"])),
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    RoleClaimType = "IdRol"
+                    RoleClaimType = ClaimTypes.Role
                 };
             });
 

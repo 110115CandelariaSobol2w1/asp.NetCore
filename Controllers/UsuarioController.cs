@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Cors;
 namespace mascotasApi.Net.Controllers;
 
 [EnableCors("extrados")]
-[Authorize]
+//[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class UsuarioController : ControllerBase
@@ -26,16 +26,16 @@ public class UsuarioController : ControllerBase
     }
 
     [HttpGet]
-    [AllowAnonymous]
+    [Authorize(Roles = "1")]
     public IEnumerable<Usuario> Get()
     {
-        
         return userService.Get();
     }
 
 
 
     [HttpPost]
+    [Authorize(Roles = "1")]
     public async Task<IActionResult> Post([FromBody] usuarioDto createUserDto)
     {
         var newUser = await userService.CreateUserAsync(createUserDto);
@@ -48,7 +48,7 @@ public class UsuarioController : ControllerBase
     {
         var claims = new[]{
             new Claim(ClaimTypes.Name, user.username),
-            new Claim("IdRol", user.IdRol.ToString())
+            new Claim(ClaimTypes.Role, user.IdRol.ToString())
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("JWT:Key").Value));
@@ -78,7 +78,7 @@ public class UsuarioController : ControllerBase
 
         // El login es exitoso, puedes realizar alguna acción adicional si es necesario
         string jwtToken = GenerateToken(user);
-        return Ok(new{token = jwtToken});
+        return Ok(new { token = jwtToken });
     }
 
 
