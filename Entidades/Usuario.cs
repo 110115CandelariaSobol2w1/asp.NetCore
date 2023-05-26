@@ -10,4 +10,6 @@ public class Usuario{
     public long? dni {get;set;}
     public string email {get;set;}
     public string numero_tel{get;set;}
+
+    public List<Mascotas> Mascotas{get;set;}
 }

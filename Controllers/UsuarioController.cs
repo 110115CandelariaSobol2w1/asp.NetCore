@@ -32,6 +32,21 @@ public class UsuarioController : ControllerBase
         return userService.Get();
     }
 
+    ////PUNTO 1 OBTENER LISTADO DE PSICOLOGOS
+    [HttpGet("/psicologos")]
+    public IEnumerable<psicologoDto> GetPsicologos()
+    {
+        return userService.GetPsicologos();
+    }
+
+
+    // [HttpGet]
+    // [AllowAnonymous]
+    // public IEnumerable<Usuario> GetUsuarioMascotas()
+    // {
+    //     return userService.
+    // }
+
 
 
     [HttpPost]
@@ -76,7 +91,7 @@ public class UsuarioController : ControllerBase
             return BadRequest(new { message = "Credenciales inválidas" });
         }
 
-        // El login es exitoso, puedes realizar alguna acción adicional si es necesario
+
         string jwtToken = GenerateToken(user);
         return Ok(new { token = jwtToken });
     }

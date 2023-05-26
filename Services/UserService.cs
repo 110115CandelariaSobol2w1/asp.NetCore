@@ -22,6 +22,14 @@ public class UserService : IUserService
         return context.Usuarios.Where(u => u.dni != null && u.email != null && u.numero_tel != null).ToList();
     }
 
+    public IEnumerable<psicologoDto> GetPsicologos()
+    {
+         return context.Usuarios
+        .Where(u => u.IdRol == 3)
+        .Select(u => new psicologoDto { IdRol = u.IdRol, username = u.username })
+        .ToList();
+    }
+
     public static string HashPassword(string password)
     {
         var sha = SHA256.Create();
@@ -76,6 +84,13 @@ public class UserService : IUserService
         return null; // El login ha fallado
     }
 
-    
+    public async Task<Usuario> ObtenerUsuariosConMascotas(int IdUsuario)
+    {
+        var usuario = await context.Usuarios
+            .Include(u => u.Mascotas) // Incluye las mascotas del usuario
+            .FirstOrDefaultAsync(u => u.IdUsuario == IdUsuario);
+
+        return usuario;
+    }
 
 }
