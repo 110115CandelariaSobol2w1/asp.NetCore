@@ -66,6 +66,8 @@ public class startUp
 });
 
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<ITurnosService, TurnosService>();
+        services.AddScoped<IMascotaService, MascotaService>();
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
